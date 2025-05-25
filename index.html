@@ -70,18 +70,92 @@
       draw();
     });
 
-    let lyrics = ["Yükleniyor..."];
-    fetch("https://api.thingspeak.com/channels/2971796/feeds.json?api_key=YGH9F31YWKUFZXI8&results=2")
-      .then(response => response.json())
-      .then(data => {
-        const feeds = data.feeds;
-        lyrics = feeds.map(f => Object.values(f).join(" "));
-        apiBox.textContent = lyrics.join("\n\n");
-      })
-      .catch(err => {
-        lyrics = ["API verisi çekilemedi."];
-        apiBox.textContent = lyrics[0];
-      });
+    let lyrics = `Uyuma kalk işine bak
+Kanını canını dişine tak hadi
+Fişini tak hadi
+İşini yap
+Bi' şınav atalım bi' de pull up
+Tanıma duranı ve de kural
+Yapamaz diyenler diyo' Kral
+Atalım havaya yazı tura
+Basalım omuza ya da kola
+Hadi yol al ikile bay
+Makara kukara değil olay
+Diyeti sporu dile kolay
+Yaramaz işine iki halay
+Dediler vay mal (derler)
+Dediler hayvan (boş ver)
+Kafamda boşalır squad lan
+Çıksın vukuatlar anca iki laflar
+At gibi her sabah bu yulaflar
+Hadi buyur aslan atılır paslar
+Hafif bu bana ağırını pasla
+Yaş günümde bile yok yaş pasta
+Kaslan ya da sen hep ol hasta
+Benzemez aşka body bambaşka
+Erken ya da belki de geç yaşta
+Laflan değil hadi kafadan başlar
+Al ulan motivasyon (Bas)
+Yapma lan acıtasyon (Bas)
+Her günüm atraksiyon (Bas)
+Bitmedi kondisyon (Bas)
+Bambaşka bi yol bizdeki vizyon
+Olamaz imitasyon (Bas)
+Yok bize limitasyon (Bas)
+Olayım dominasyon (lan)
+Al ulan motivasyon (Bas)
+Yapma lan acıtasyon (Bas)
+Her günüm atraksiyon (Bas)
+Bitmedi kondisyon (Bas)
+Bambaşka bi yol bizdeki vizyon
+Olamaz imitasyon (Bas)
+Yok bize limitasyon (Bas)
+Olayım dominasyon (lan)
+Sırt bacak ha bi' de üç set deadlift
+İşiniz bad trip gücümüz adlib
+Barfiksi biliyo'sun neremize çektik (Çek Sik)
+Evet ona çektik
+Bu piyasa tek tip
+Zırlama kes biç
+Yine yeni liflerin tohumunu ektik (ek ek)
+40 kilo dumbell'ı tut hadi ma nigga kanadına çek (çek)
+Bu Rap'imi dinle ve harekete geç (geç)
+Güçlenecek misin? tarafını seç (seç)
+Tamam hadi geç (geç)
+Aramıza geç (geç)
+Bi'kaç aya gelecek sana da bi' patch
+No pain kardeş no gain no press
+Tek başına da bas şart değil eş (bas)
+Bugün legpress homie Yarın bench press
+Pestilin çıkabilir şekeri de kes (kes)
+Yok hemen pes
+Bu tamam what's next?
+Kardiyosuz bi' yalan fast breaks
+Kardi b offset belki de Drake
+Dinle ve zıpla bu müzik tek
+Uçarım durmam Fero griffin blake
+Yok shot fake smacını bas geç
+Yağları yak kategori atlet (atlet)
+Bitti şafak johnny moni kardeş (finish)
+Al ulan motivasyon (Bas)
+Yapma lan acıtasyon (Bas)
+Her günüm atraksiyon (Bas)
+Bitmedi kondisyon (Bas)
+Bambaşka bi yol bizdeki vizyon
+Olamaz imitasyon (Bas)
+Yok bize limitasyon (Bas)
+Olayım dominasyon (lan)
+Al ulan motivasyon (Bas)
+Yapma lan acıtasyon (Bas)
+Her günüm atraksiyon (Bas)
+Bitmedi kondisyon (Bas)
+Bambaşka bi yol bizdeki vizyon
+Olamaz imitasyon (Bas)
+Yok bize limitasyon (Bas)
+Olayım dominasyon (lan)`;
+lyrics = lyrics.split("
+");
+    // Şarkı sözleri sabit, API'den veri çekilmeyecek
 
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');

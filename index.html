@@ -33,9 +33,8 @@
     }
     #apiBox {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 80px;
+      left: 20px;
       width: 240px;
       height: 160px;
       background-color: rgba(0, 255, 0, 0.1);
@@ -46,7 +45,7 @@
       overflow: auto;
       font-size: 14px;
       z-index: 99;
-      text-align: center;
+      text-align: left;
     }
   </style>
 </head>
@@ -65,24 +64,23 @@
     const apiBox = document.getElementById('apiBox');
     audio.volume = 0.2;
 
-    // Başlat butonuna tıklanınca ses ve animasyon başlasın
     startBtn.addEventListener('click', () => {
       audio.play();
       startBtn.style.display = 'none';
       draw();
     });
 
-    let lyrics = "Yükleniyor...";
+    let lyrics = ["Yükleniyor..."];
     fetch("https://api.thingspeak.com/channels/2971796/feeds.json?api_key=YGH9F31YWKUFZXI8&results=2")
       .then(response => response.json())
       .then(data => {
         const feeds = data.feeds;
-        lyrics = feeds.map(f => Object.values(f).join("\n")).join("\n\n");
-        apiBox.textContent = lyrics;
+        lyrics = feeds.map(f => Object.values(f).join(" "));
+        apiBox.textContent = lyrics.join("\n\n");
       })
       .catch(err => {
-        lyrics = "API verisi çekilemedi.";
-        apiBox.textContent = lyrics;
+        lyrics = ["API verisi çekilemedi."];
+        apiBox.textContent = lyrics[0];
       });
 
     const canvas = document.getElementById('matrix');
@@ -92,10 +90,9 @@
     canvas.width = window.innerWidth;
 
     const fontSize = 20;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    let index = 0;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = Array(columns).fill(1);
+    const lineIndex = Array(columns).fill(0);
 
     function draw() {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
@@ -104,17 +101,18 @@
       ctx.fillStyle = '#0F0';
       ctx.font = fontSize + 'px monospace';
 
-      for (let i = 0; i < drops.length; i++) {
-        const char = lyrics.charAt(index % lyrics.length);
+      for (let i = 0; i < columns; i++) {
+        const line = lyrics[lineIndex[i] % lyrics.length] || '';
+        const char = line.charAt((drops[i] - 1) % line.length);
         ctx.fillText(char, i * fontSize, drops[i] * fontSize);
 
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
+          lineIndex[i] = (lineIndex[i] + 1) % lyrics.length;
         }
         drops[i]++;
       }
 
-      index++;
       requestAnimationFrame(draw);
     }
   </script>

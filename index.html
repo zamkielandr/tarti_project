@@ -31,18 +31,36 @@
     #audio {
       display: none;
     }
+    #apiBox {
+      position: absolute;
+      top: 80px;
+      left: 20px;
+      width: 240px; /* 6 birim */
+      height: 160px; /* 4 birim */
+      background-color: rgba(0, 255, 0, 0.1);
+      border: 2px solid #0F0;
+      padding: 10px;
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      overflow: auto;
+      font-size: 14px;
+      z-index: 99;
+    }
   </style>
 </head>
 <body>
-  <button id="startBtn">BASS</button>
+  <button id="startBtn">Müziği Başlat</button>
+  <div id="apiBox">Veri bekleniyor...</div>
   <canvas id="matrix"></canvas>
   <audio id="audio" loop>
-    <source src="motivasyon.mp3" type="audio/mpeg">
+    <source src="docs/motivasyon.mp3" type="audio/mpeg">
+    Tarayıcınız bu sesi desteklemiyor.
   </audio>
 
   <script>
     const audio = document.getElementById('audio');
     const startBtn = document.getElementById('startBtn');
+    const apiBox = document.getElementById('apiBox');
     audio.volume = 0.2;
 
     // Başlat butonuna tıklanınca ses ve animasyon başlasın
@@ -58,9 +76,11 @@
       .then(data => {
         const feeds = data.feeds;
         lyrics = feeds.map(f => Object.values(f).join("\n")).join("\n\n");
+        apiBox.textContent = lyrics;
       })
       .catch(err => {
         lyrics = "API verisi çekilemedi.";
+        apiBox.textContent = lyrics;
       });
 
     const canvas = document.getElementById('matrix');

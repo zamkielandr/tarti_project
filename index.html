@@ -51,8 +51,11 @@
       fetch('https://api.thingspeak.com/channels/2971796/feeds.json?api_key=YGH9F31YWKUFZXI8&results=10')
         .then(res => res.json())
         .then(data => {
-          lastValues = data.feeds.map(f => Object.values(f).join(' • '));
-          apiBox.textContent = lastValues.join('\n');
+          lastValues = data.feeds.map(f => `${f.created_at}
+${f.field1} g`);
+          apiBox.textContent = lastValues.join('
+
+');
         })
         .catch(() => {
           if (lastValues.length) apiBox.textContent = lastValues.join('\n');

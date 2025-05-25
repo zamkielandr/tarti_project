@@ -4,49 +4,20 @@
   <meta charset="UTF-8">
   <title>Matrix Motivasyon</title>
   <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: black;
-      color: #0F0;
-      font-family: monospace;
-    }
-    canvas {
-      display: block;
-    }
+    body { margin: 0; overflow: hidden; background: black; color: #0F0; font-family: monospace; }
+    canvas { display: block; }
     #startBtn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 100;
-      background: #0F0;
-      color: black;
-      font-weight: bold;
-      border: none;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-    #audio {
-      display: none;
+      position: absolute; top: 20px; left: 20px; z-index: 100;
+      background: #0F0; color: black; font-weight: bold; border: none;
+      padding: 10px 20px; cursor: pointer; font-size: 16px; border-radius: 5px;
     }
     #apiBox {
-      position: absolute;
-      top: 80px;
-      left: 20px;
-      width: 240px;
-      height: 160px;
-      background-color: rgba(0, 255, 0, 0.1);
-      border: 2px solid #0F0;
-      padding: 10px;
-      box-sizing: border-box;
-      white-space: pre-wrap;
-      overflow: auto;
-      font-size: 14px;
-      z-index: 99;
-      text-align: left;
+      position: absolute; top: 80px; left: 20px; width: 240px; height: 160px;
+      background-color: rgba(0,255,0,0.1); border: 2px solid #0F0;
+      padding: 10px; box-sizing: border-box; white-space: pre-wrap;
+      overflow: auto; font-size: 14px; z-index: 99; text-align: left;
     }
+    audio { display: none; }
   </style>
 </head>
 <body>
@@ -55,79 +26,64 @@
   <canvas id="matrix"></canvas>
   <audio id="audio" loop>
     <source src="docs/matrix.mp3" type="audio/mpeg">
-    Tarayıcınız bu sesi desteklemiyor.
   </audio>
-
   <script>
     const audio = document.getElementById('audio');
     const startBtn = document.getElementById('startBtn');
     const apiBox = document.getElementById('apiBox');
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
     audio.volume = 0.2;
 
+    // Başlat butonu sadece sesi başlatır
     startBtn.addEventListener('click', () => {
-      audio.play().catch(e => console.log("Müzik çalma hatası:", e));
+      audio.play().catch(e => console.log('Audio play error:', e));
       startBtn.style.display = 'none';
     });
 
-draw();
-    });
-
+    // Random karakter seti
     const characters = "アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-let lyrics = characters.split("");
+    let lyrics = characters.split('');
 
-    let lastTwoFeeds = [];
-function fetchLatestValue() {
-  fetch("https://api.thingspeak.com/channels/2971796/feeds.json?api_key=YGH9F31YWKUFZXI8&results=2")
-    .then(response => response.json())
-    .then(data => {
-      lastTwoFeeds = data.feeds.map(f => Object.values(f).join(" • "));
-      apiBox.textContent = lastTwoFeeds.join("
+    // API'den son 2 değeri çek ve kutuda göster
+    let lastTwo = [];
+    function fetchLatest() {
+      fetch('https://api.thingspeak.com/channels/2971796/feeds.json?api_key=YGH9F31YWKUFZXI8&results=2')
+        .then(res => res.json())
+        .then(data => {
+          lastTwo = data.feeds.map(f => Object.values(f).join(' • '));
+          apiBox.textContent = lastTwo.join('\n\n');
+        })
+        .catch(() => {
+          // hata olsa bile sonTwo koru
+          if (lastTwo.length) apiBox.textContent = lastTwo.join('\n\n');
+        });
+    }
+    fetchLatest();
+    setInterval(fetchLatest, 10000);
 
-");
-    })
-    .catch(err => {
-      if (lastTwoFeeds.length > 0) {
-        apiBox.textContent = lastTwoFeeds.join("
-
-");
-      }
-    });
-}
-fetchLatestValue();
-setInterval(fetchLatestValue, 10000);
-
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-
+    // Canvas ayarları
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
-
     const fontSize = 20;
     const columns = Math.floor(canvas.width / fontSize);
     const drops = Array(columns).fill(1);
-    const lineIndex = Array(columns).fill(0);
 
     function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+      ctx.fillStyle = 'rgba(0,0,0,0.05)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
       ctx.fillStyle = '#0F0';
       ctx.font = fontSize + 'px monospace';
-
-      for (let i = 0; i < columns; i++) {
-        const line = lyrics[lineIndex[i] % lyrics.length] || '';
-        const char = line.charAt((drops[i] - 1) % line.length);
-        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-          lineIndex[i] = (lineIndex[i] + 1) % lyrics.length;
-        }
+      for (let i=0; i<columns; i++) {
+        const char = lyrics[Math.floor(Math.random() * lyrics.length)];
+        ctx.fillText(char, i*fontSize, drops[i]*fontSize);
+        if (drops[i]*fontSize > canvas.height && Math.random()>0.975) drops[i]=0;
         drops[i]++;
       }
-
       requestAnimationFrame(draw);
     }
+    // Animasyon otomatik başlar
+    draw();
   </script>
 </body>
 </html>

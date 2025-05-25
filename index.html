@@ -52,11 +52,15 @@
         .then(res => res.json())
         .then(data => {
           lastValues = data.feeds.map(f => Object.values(f).join(' • '));
-          apiBox.textContent = lastTwo.join('\n\n');
+          apiBox.textContent = lastValues.join('
+
+');
         })
         .catch(() => {
           // hata olsa bile sonTwo koru
-          if (lastTwo.length) apiBox.textContent = lastTwo.join('\n\n');
+          if (lastValues.length) apiBox.textContent = lastValues.join('
+
+');
         });
     }
     fetchLatest();

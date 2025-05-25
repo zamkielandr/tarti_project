@@ -18,12 +18,17 @@
 <body>
   <canvas id="matrix"></canvas>
 
-  <audio autoplay loop>
-    <source src="https://zamkielandr.github.io/tarti_project/motivasyon.mp3" type="audio/mpeg">
+  <!-- Ses oynatıcı (başlangıçta %20 ses seviyesinde) -->
+  <audio id="audio" autoplay loop controls style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+    <source src="motivasyon.mp3" type="audio/mpeg">
     Tarayıcınız bu sesi desteklemiyor.
   </audio>
 
   <script>
+    // Ses seviyesini %20'ye ayarla
+    const audio = document.getElementById('audio');
+    audio.volume = 0.2;
+
     const lyrics = `Uyuma kalk işine bak
 Kanını canını dişine tak hadi
 Fişini tak hadi

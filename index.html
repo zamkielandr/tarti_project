@@ -154,20 +154,21 @@ Olamaz imitasyon (Bas)
 Yok bize limitasyon (Bas)
 Olayım dominasyon (lan)`;
 
-    fetch("https://api.thingspeak.com/channels/2971796/feeds.json?api_key=YGH9F31YWKUFZXI8&results=2")
-      .then(response => response.json())
-      .then(data => {
-        const feeds = data.feeds;
-        lyrics = feeds.map(f => Object.values(f).join(" ")).join("
-").split("
-");
-        apiBox.textContent = lyrics.join("
-");
-      })
-      .catch(err => {
-        lyrics = ["API verisi çekilemedi."];
-        apiBox.textContent = lyrics[0];
-      });
+    function fetchLatestValue() {
+  fetch("https://api.thingspeak.com/channels/2971796/feeds.json?api_key=YGH9F31YWKUFZXI8&results=1")
+    .then(response => response.json())
+    .then(data => {
+      const feed = data.feeds[0];
+      const text = Object.values(feed).join(" • ");
+      apiBox.textContent = text;
+    })
+    .catch(err => {
+      apiBox.textContent = "API verisi çekilemedi.";
+    });
+}
+
+fetchLatestValue();
+setInterval(fetchLatestValue, 10000);
 
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');

@@ -65,7 +65,7 @@
     audio.volume = 0.2;
 
     startBtn.addEventListener('click', () => {
-      audio.play();
+      audio.play().catch(e => console.log("Müzik çalma hatası:", e));
       startBtn.style.display = 'none';
       draw();
     });
@@ -159,7 +159,6 @@ Olayım dominasyon (lan)`;
       .then(data => {
         const feeds = data.feeds;
         lyrics = feeds.map(f => Object.values(f).join(" ")).join("
-
 ").split("
 ");
         apiBox.textContent = lyrics.join("

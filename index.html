@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Tarti_project</title>
+  <title>tarti_prject</title>
   <style>
     body { margin: 0; overflow: hidden; background: black; color: #0F0; font-family: monospace; }
     canvas { display: block; }
@@ -22,7 +22,7 @@
 </head>
 <body>
   <button id="startBtn">Müziği Başlat</button>
-  <div id="apiBox">Veri bekleniyor...</div>
+  <div id="apiBox"></div>
   <canvas id="matrix"></canvas>
   <audio id="audio" loop>
     <source src="docs/matrix.mp3" type="audio/mpeg">
@@ -45,22 +45,17 @@
     const characters = "アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let lyrics = characters.split('');
 
-    // API'den son 2 değeri çek ve kutuda göster
+    // API'den son 10 değeri çek ve kutuda göster
     let lastValues = [];
     function fetchLatest() {
       fetch('https://api.thingspeak.com/channels/2971796/feeds.json?api_key=YGH9F31YWKUFZXI8&results=10')
         .then(res => res.json())
         .then(data => {
           lastValues = data.feeds.map(f => Object.values(f).join(' • '));
-          apiBox.textContent = lastValues.join('
-
-');
+          apiBox.textContent = lastValues.join('\n');
         })
         .catch(() => {
-          // hata olsa bile sonTwo koru
-          if (lastValues.length) apiBox.textContent = lastValues.join('
-
-');
+          if (lastValues.length) apiBox.textContent = lastValues.join('\n');
         });
     }
     fetchLatest();
